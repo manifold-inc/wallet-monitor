@@ -2,6 +2,8 @@
 
 Monitor transfers of high value wallets
 
+Docker image: `manifoldlabs/wallet-monitor`
+
 | Env                        | Value                      | type                    | example                                                                                           |
 | -------------------------- | -------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
 | DISCORD_URL                | Discord webhook URL        | url                     | https://discord.com/api/webhooks/2222222222/aaaaaaaaaaaaaa                                        |
@@ -10,3 +12,4 @@ Monitor transfers of high value wallets
 | WARNING_TRANSFER_THRESHOLD | Warning transfer threshold | number (rao) (optional) | 1000000000                                                                                        |
 | WARNING_BALANCE_THRESHOLD  | Warning balance threshold  | number (rao) (optional) | 50000000000                                                                                       |
 | WARNING_ONLY               | Only log warnings          | string (optional)       | \[true/false\]                                                                                    |
+
