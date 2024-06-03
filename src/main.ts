@@ -31,6 +31,14 @@ const getBalance = async (coldkey: string) => {
 };
 
 const main = async () => {
+  process.on("SIGINT", function() {
+    log.info("Gracefully quitting");
+    process.exit();
+  });
+  process.on("SIGTERM", function() {
+    log.info("Gracefully quitting");
+    process.exit();
+  });
   const COLDKEYS = env.COLDKEYS.split(",").map((k) => k.trim());
   const WARNING_TRANSFER_THRESHOLD = parseInt(
     env.WARNING_TRANSFER_THRESHOLD ?? "0",
@@ -46,9 +54,23 @@ const main = async () => {
   }
 
   const WARNING_ONLY = env.WARNING_ONLY?.toLowerCase() === "true" ?? false;
+  log.info("Starting up with config:");
+  log.info(
+    JSON.stringify(
+      {
+        COLDKEYS,
+        WARNING_ONLY,
+        WARNING_BALANCE_THRESHOLD,
+        WARNING_TRANSFER_THRESHOLD,
+      },
+      null,
+      2,
+    ),
+  );
 
   await bt.api.rpc.chain.subscribeFinalizedHeads(async (header) => {
     const currentChainBlockHash = header.hash.toString();
+    log.info(`Processing ${currentChainBlockHash}`);
     const events = await getEventsFromBlock(currentChainBlockHash);
     if (!events) return;
     for (const e of events) {
@@ -57,19 +79,19 @@ const main = async () => {
       const tao = (rao / 1e9).toLocaleString();
       const from = _from.toString();
       const to = _to.toString();
-      if (!(from.toString() in COLDKEYS)) continue;
+      if (!COLDKEYS.includes(from.toString())) continue;
 
       if (WARNING_TRANSFER_THRESHOLD && rao >= WARNING_TRANSFER_THRESHOLD) {
-        log.warn(`Transfer from ${from} -> ${to} | ${tao}t`);
+        log.warn(`From\n\`${from}\`\nTo\n\`${to}\`\n${tao}t`);
       } else if (!WARNING_ONLY) {
-        log.info(`Transfer from ${from} -> ${to} | ${tao}t`);
+        log.info(`From\n\`${from}\`\nTo\n\`${to}\`\n${tao}t`, true);
       }
 
       if (!WARNING_BALANCE_THRESHOLD) continue;
       const balance = await getBalance(from);
       if (balance <= WARNING_BALANCE_THRESHOLD) {
         log.warn(
-          `Wallet ${from} below threshold: ${(balance / 1e9).toLocaleString()}t`,
+          `Wallet \`${from}\` below threshold: ${(balance / 1e9).toLocaleString()}t`,
         );
       }
     }
