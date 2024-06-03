@@ -1,0 +1,30 @@
+{
+  "name": "wallet-monitor",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun src/main.ts"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@types/eslint": "^8.56.2",
+    "@typescript-eslint/parser": "^7.8.0",
+    "eslint": "^8.57.0",
+    "prettier": "3.2.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@planetscale/database": "^1.16.0",
+    "@polkadot/api": "^11.0.2",
+    "@t3-oss/env-core": "^0.10.1",
+    "moment": "^2.30.1",
+    "ethers": "^6.12.0",
+    "nanoid": "^5.0.7",
+    "web3": "^4.8.0",
+    "zod": "^3.23.4"
+  }
+}
